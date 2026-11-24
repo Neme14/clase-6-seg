@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pizarra Digital Montano - Ensayo Orquestal Río Polochic (Frases 1 y 2)</title>
+    <!-- Tailwind CSS para diseño responsivo y utilidades -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Tone.js para sintetizar sonido cálido de madera (Marimba) sin archivos externos -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+    <!-- Font Awesome para iconografía musical y educativa -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Tipografía Institucional Sans-Serif */
+        body {
+            font-family: 'Segoe UI', Tahoma, Verdana, sans-serif;
+            background-color: #F2F5E9;
+            color: #1e293b;
+        }
+
+        /* Paleta Institucional Colegio Montano */
+        .bg-montano-blue { background-color: #1269A8; }
+        .text-montano-blue { color: #1269A8; }
+        .border-montano-blue { border-color: #1269A8; }
+
+        .bg-montano-yellow { background-color: #F7D615; }
+        .text-montano-yellow { color: #F7D615; }
+        .border-montano-yellow { border-color: #F7D615; }
+
+        .bg-montano-teal { background-color: #54887D; }
+        .text-montano-teal { color: #54887D; }
+        .border-montano-teal { border-color: #54887D; }
+
+        .bg-montano-light-blue { background-color: #88B5C7; }
+        .border-montano-light-blue { border-color: #88B5C7; }
+
+        .bg-montano-olive { background-color: #A6B046; }
+        .text-montano-olive { color: #A6B046; }
+        .border-montano-olive { border-color: #A6B046; }
+
+        .bg-montano-board { background-color: #F2F5E9; }
+
+        /* Estilos de Pestañas Activas e Inactivas */
+        .tab-btn {
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .tab-btn.active {
+            background-color: #1269A8;
+            color: #FFFFFF;
+            border-bottom: 5px solid #F7D615;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px -2px rgba(18, 105, 168, 0.35);
+        }
+        .tab-btn:not(.active):hover {
+            background-color: #88B5C7;
+            color: #0f172a;
+        }
+
+        /* Estilos de Teclas de Marimba de Hormigo */
+        .marimba-key {
+            background: linear-gradient(180deg, #7c3f1d 0%, #5c2c12 60%, #3e1c0a 100%);
+            border: 2px solid #2b1205;
+            border-radius: 0.75rem;
+            box-shadow: 0 6px 0 #2b1205, 0 10px 15px rgba(0,0,0,0.25);
+            transition: transform 0.08s ease, box-shadow 0.08s ease, filter 0.1s ease;
+            user-select: none;
+            cursor: pointer;
+        }
+        .marimba-key:active, .marimba-key.playing {
+            transform: translateY(5px);
+            box-shadow: 0 1px 0 #2b1205, 0 3px 6px rgba(0,0,0,0.3);
+            filter: brightness(1.35);
+            border-color: #F7D615;
+        }
+        .marimba-key-sharp {
+            background: linear-gradient(180deg, #4a2310 0%, #2e1407 100%);
+            border: 2px solid #1a0b03;
+            border-radius: 0.65rem;
+            box-shadow: 0 5px 0 #1a0b03, 0 8px 12px rgba(0,0,0,0.3);
+            transition: transform 0.08s ease, box-shadow 0.08s ease;
+            user-select: none;
+            cursor: pointer;
+        }
+        .marimba-key-sharp:active, .marimba-key-sharp.playing {
+            transform: translateY(4px);
+            box-shadow: 0 1px 0 #1a0b03;
+            filter: brightness(1.5);
+            border-color: #F7D615;
+        }
+
+        /* Animación suave para acordeones y paneles */
+        .fade-in {
+            animation: fadeIn 0.35s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Ajuste en Pantalla Completa */
+        :fullscreen {
+            background-color: #F2F5E9;
+            overflow-y: auto;
+            padding: 1rem;
+        }
+    </style>
+</head>
+<body class="bg-montano-board min-h-screen flex flex-col">
+
+    <!-- Contenedor Principal de la Pizarra Digital -->
+    <div id="pizarra-container" class="max-w-7xl w-full mx-auto px-3 sm:px-6 py-4 flex-grow flex flex-col gap-5">
+
+        <!-- ENCABEZADO INSTITUCIONAL COLEGIO MONTANO -->
+        <header class="bg-white rounded-2xl shadow-lg border-t-8 border-montano-blue overflow-hidden">
+            <div class="bg-montano-blue text-white px-4 sm:px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
+                <!-- Logo y Título Institucional -->
+                <div class="flex items-center gap-4 text-center md:text-left flex-col sm:flex-row">
+                    <div class="bg-white p-1.5 rounded-xl shadow-md shrink-0">
+                        <img 
+                            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyEop0yf6lZ7Jk9MILZxF1rBj4Oqs5esyhIQ&s" 
+                            alt="Logo Colegio Montano" 
+                            class="h-16 w-16 object-contain rounded-lg"
+                            onerror="this.src='https://placehold.co/80x80/1269A8/FFFFFF?text=MONTANO'"
+                        >
+                    </div>
+                    <div>
+                        <div class="inline-flex items-center gap-2 bg-montano-yellow text-slate-900 text-xs font-extrabold px-3 py-1 rounded-full uppercase tracking-wider mb-1">
+                            <i class="fa-solid fa-chalkboard-user"></i> Pizarra Digital Interactiva • Colegio Montano
+                        </div>
+                        <h1 class="text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight">
+                            Ensayo en Orquesta: Primera y Segunda Frase • "Río Polochic"
+                        </h1>
+                        <p class="text-sm text-blue-100 font-medium">
+                            Compositor: Rodolfo Narciso Chavarría • Ensamble de Melodía, Armonía y Ritmo en Marimba
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Controles Superiores: Temporizador Rápido y Pantalla Completa -->
+                <div class="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
+                    <div class="bg-white/15 backdrop-blur-sm border border-white/25 rounded-xl px-3 py-2 flex items-center gap-2">
+                        <i class="fa-regular fa-clock text-montano-yellow text-lg"></i>
+                        <span id="timer-display" class="font-mono font-bold text-lg tracking-wider">70:00</span>
+                        <button onclick="toggleTimer()" id="timer-btn" class="bg-montano-yellow text-slate-900 hover:bg-yellow-300 font-bold text-xs px-2.5 py-1 rounded-lg transition">
+                            Iniciar
+                        </button>
+                    </div>
+
+                    <button 
+                        onclick="toggleFullScreen()" 
+                        id="fullscreen-btn"
+                        class="bg-montano-yellow hover:bg-yellow-300 text-slate-900 font-extrabold px-4 py-2.5 rounded-xl shadow-md flex items-center gap-2 transition transform active:scale-95 cursor-pointer"
+                        title="Ampliar Pizarra a Pantalla Completa"
+                    >
+                        <i class="fa-solid fa-expand text-lg"></i>
+                        <span class="text-sm">Pantalla Completa</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Barra de Metadatos del Plan Diario -->
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 px-4 sm:px-6 py-3 bg-slate-50 border-b border-slate-200 text-xs sm:text-sm">
+                <div class="bg-white p-2 rounded-xl border border-slate-200">
+                    <span class="block text-slate-400 font-semibold text-xs uppercase">Curso</span>
+                    <span class="font-bold text-montano-blue">Formación Musical</span>
+                </div>
+                <div class="bg-white p-2 rounded-xl border border-slate-200">
+                    <span class="block text-slate-400 font-semibold text-xs uppercase">Grado</span>
+                    <span class="font-bold text-slate-800">Segundo Primaria</span>
+                </div>
+                <div class="bg-white p-2 rounded-xl border border-slate-200">
+                    <span class="block text-slate-400 font-semibold text-xs uppercase">Unidad</span>
+                    <span class="font-bold text-slate-800">Primera Unidad</span>
+                </div>
+                <div class="bg-white p-2 rounded-xl border border-slate-200">
+                    <span class="block text-slate-400 font-semibold text-xs uppercase">Plan No.</span>
+                    <span class="font-bold text-montano-teal">Plan Diario #06</span>
+                </div>
+                <div class="bg-white p-2 rounded-xl border border-slate-200">
+                    <span class="block text-slate-400 font-semibold text-xs uppercase">Sesión</span>
+                    <span class="font-bold text-slate-800">Clase 06 • Primera Unidad</span>
+                </div>
+                <div class="bg-white p-2 rounded-xl border border-slate-200">
+                    <span class="block text-slate-400 font-semibold text-xs uppercase">Docente</span>
+                    <span class="font-bold text-slate-800">Prof. Nemecio Cutzán</span>
+                </div>
+            </div>
+
+            <!-- Panel Desplegable: Fundamento Pedagógico CNB, Hábitos Montano y Recursos -->
+            <div class="px-4 sm:px-6 py-3 bg-white">
+                <button 
+                    onclick="toggleAccordion('pedagogia-panel', 'pedagogia-icon')" 
+                    class="w-full flex items-center justify-between text-left font-bold text-montano-blue hover:text-blue-800 py-1 focus:outline-none cursor-pointer"
+                >
+                    <span class="flex items-center gap-2 text-sm sm:text-base">
+                        <i class="fa-solid fa-compass text-montano-teal"></i>
+                        Enfoque Pedagógico CNB Guatemala, Hábitos Montano, Evaluación y Recursos
+                    </span>
+                    <span class="bg-montano-board px-3 py-1 rounded-full text-xs font-bold text-montano-teal flex items-center gap-1">
+                        Ver / Ocultar <i id="pedagogia-icon" class="fa-solid fa-chevron-down transition-transform"></i>
+                    </span>
+                </button>
+
+                <div id="pedagogia-panel" class="hidden mt-3 pt-3 border-t border-slate-200 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 text-xs sm:text-sm fade-in">
+                    <!-- Competencia y Logro CNB -->
+                    <div class="bg-montano-board p-3.5 rounded-xl border-l-4 border-montano-blue">
+                        <h3 class="font-extrabold text-montano-blue mb-1 flex items-center gap-1.5">
+                            <i class="fa-solid fa-bullseye"></i> Competencia y Logro (CNB)
+                        </h3>
+                        <p class="text-slate-700 mb-2">
+                            <strong>Competencia (Expresión Artística 2.º Primaria):</strong> Participa en ensambles instrumentales escolares integrando melodía, armonía y ritmo en repertorio tradicional guatemalteco.
+                        </p>
+                        <p class="text-slate-700">
+                            <strong>Logro observable:</strong> Ensaya de forma coordinada en <strong>formato de orquesta</strong> la Primera y Segunda Frase de <em>"Río Polochic"</em>, manteniendo el pulso de vals (3/4), el acompañamiento armónico y la melodía unida.
+                        </p>
+                    </div>
+
+                    <!-- Hábitos Modelo Formativo Montano -->
+                    <div class="bg-montano-board p-3.5 rounded-xl border-l-4 border-montano-olive">
+                        <h3 class="font-extrabold text-montano-olive mb-1 flex items-center gap-1.5">
+                            <i class="fa-solid fa-seedling"></i> Hábitos Montano y Comp. Clave
+                        </h3>
+                        <ul class="space-y-1 text-slate-700">
+                            <li><strong>• Sinergizar:</strong> Unir melodía, armonía y ritmo para crear un sonido orquestal.</li>
+                            <li><strong>• Buscar primero entender:</strong> Escuchar a los compañeros antes de golpear la tecla.</li>
+                            <li><strong>• Comenzar con un fin en mente:</strong> Visualizar la unión entre la Frase 1 y la Frase 2.</li>
+                            <li><strong>• Poner primero lo primero:</strong> Mantener el pulso firme antes de acelerar.</li>
+                        </ul>
+                        <div class="mt-2 flex flex-wrap gap-1">
+                            <span class="bg-white px-2 py-0.5 rounded-md text-xs font-semibold text-montano-teal border border-montano-teal/30">Trabajo en equipo</span>
+                            <span class="bg-white px-2 py-0.5 rounded-md text-xs font-semibold text-montano-teal border border-montano-teal/30">Inteligencia emocional</span>
+                            <span class="bg-white px-2 py-0.5 rounded-md text-xs font-semibold text-montano-teal border border-montano-teal/30">Comunicación</span>
+                        </div>
+                    </div>
+
+                    <!-- Evaluación en Tres Momentos -->
+                    <div class="bg-montano-board p-3.5 rounded-xl border-l-4 border-montano-teal">
+                        <h3 class="font-extrabold text-montano-teal mb-1 flex items-center gap-1.5">
+                            <i class="fa-solid fa-clipboard-check"></i> Evaluación (3 Momentos)
+                        </h3>
+                        <ul class="space-y-1.5 text-slate-700">
+                            <li><strong>1. Inicial (Diagnóstica):</strong> Afinación de pulso colectivo (1-2-3) y repaso del puente entre Frase 1 y Frase 2.</li>
+                            <li><strong>2. Formativa:</strong> Observación del equilibrio sonoro entre las secciones de Melodía, Armonía y Ritmo.</li>
+                            <li><strong>3. Sumativa:</strong> Lista de cotejo interactiva evaluando el ensayo orquestal completo en plenaria.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Recursos Didácticos -->
+                    <div class="bg-montano-board p-3.5 rounded-xl border-l-4 border-montano-yellow">
+                        <h3 class="font-extrabold text-slate-800 mb-1 flex items-center gap-1.5">
+                            <i class="fa-solid fa-drum"></i> Recursos de la Sesión
+                        </h3>
+                        <ul class="space-y-1 text-slate-700">
+                            <li>• Marimba escolar / xilófonos / baquetas.</li>
+                            <li>• Pizarra Digital Interactiva con <strong>Marimba Virtual Integrada</strong>.</li>
+                            <li>• Guía visual de teclas con código de colores.</li>
+                            <li>• Cuaderno pautado de Formación Musical y lápices de colores.</li>
+                            <li>• Tarjetas de roles para ensamble grupal.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- NAVEGACIÓN DE PESTAÑAS DE LA SECUENCIA DIDÁCTICA -->
+        <nav aria-label="Secuencia Didáctica" class="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
+            <button onclick="switchTab('tab1')" id="btn-tab1" class="tab-btn active bg-white rounded-2xl p-3 sm:p-4 text-left border-2 border-montano-blue/20 shadow-sm cursor-pointer">
+                <div class="flex items-center justify-between mb-1">
+                    <span class="text-xs font-extrabold uppercase tracking-wider opacity-85">Momento I</span>
+                    <span class="bg-montano-yellow text-slate-900 text-xs font-extrabold px-2 py-0.5 rounded-full">~5 min</span>
+                </div>
+                <div class="font-extrabold text-sm sm:text-base flex items-center gap-2">
+                    <i class="fa-solid fa-sparkles"></i> Introducción Motivante
+                </div>
+            </button>
+
+            <button onclick="switchTab('tab2')" id="btn-tab2" class="tab-btn bg-white rounded-2xl p-3 sm:p-4 text-left border-2 border-montano-blue/20 shadow-sm cursor-pointer">
+                <div class="flex items-center justify-between mb-1">
+                    <span class="text-xs font-extrabold uppercase tracking-wider opacity-85">Momento II</span>
+                    <span class="bg-montano-olive text-white text-xs font-extrabold px-2 py-0.5 rounded-full">20 min</span>
+                </div>
+                <div class="font-extrabold text-sm sm:text-base flex items-center gap-2">
+                    <i class="fa-solid fa-user-pen"></i> Trabajo Individual
+                </div>
+            </button>
+
+            <button onclick="switchTab('tab3')" id="btn-tab3" class="tab-btn bg-white rounded-2xl p-3 sm:p-4 text-left border-2 border-montano-blue/20 shadow-sm cursor-pointer">
+                <div class="flex items-center justify-between mb-1">
+                    <span class="text-xs font-extrabold uppercase tracking-wider opacity-85">Momento III</span>
+                    <span class="bg-montano-teal text-white text-xs font-extrabold px-2 py-0.5 rounded-full">30 min</span>
+                </div>
+                <div class="font-extrabold text-sm sm:text-base flex items-center gap-2">
+                    <i class="fa-solid fa-people-group"></i> Trabajo Cooperativo
+                </div>
+            </button>
+
+            <button onclick="switchTab('tab4')" id="btn-tab4" class="tab-btn bg-white rounded-2xl p-3 sm:p-4 text-left border-2 border-montano-blue/20 shadow-sm cursor-pointer">
+                <div class="flex items-center justify-between mb-1">
+                    <span class="text-xs font-extrabold uppercase tracking-wider opacity-85">Momento IV</span>
+                    <span class="bg-montano-blue text-white text-xs font-extrabold px-2 py-0.5 rounded-full">15 min</span>
+                </div>
+                <div class="font-extrabold text-sm sm:text-base flex items-center gap-2">
+                    <i class="fa-solid fa-music"></i> Plenaria y Marimba Virtual
+                </div>
+            </button>
+        </nav>
+
+        <!-- ÁREA DE CONTENIDO DE LA PIZARRA INTERACTIVA -->
+        <main class="bg-white rounded-3xl shadow-xl border-2 border-montano-light-blue/60 p-4 sm:p-7 flex-grow">
+
+            <!-- ================================================================= -->
+            <!-- PESTAÑA I: INTRODUCCIÓN MOTIVANTE (~5 MINUTOS)                    -->
+            <!-- ================================================================= -->
+            <section id="tab1" class="tab-content fade-in space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b-2 border-montano-board pb-4">
+                    <div>
+                        <span class="bg-montano-yellow text-slate-900 text-xs font-extrabold px-3 py-1 rounded-full uppercase">Momento I • Afinación Orquestal</span>
+                        <h2 class="text-2xl sm:text-3xl font-extrabold text-montano-blue mt-2">
+                            ¡Hoy Somos una Orquesta de Marimba! 🎼🇬🇹
+                        </h2>
+                    </div>
+                    <div class="bg-montano-board px-4 py-2 rounded-2xl border border-montano-olive text-sm font-bold text-montano-teal">
+                        <i class="fa-solid fa-lightbulb text-montano-olive mr-1"></i> Hábito: <em>Sinergizar</em>
+                    </div>
+                </div>
+
+                <!-- Dinámica Rápida / Recreo Cerebral -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+                    <div class="lg:col-span-2 bg-montano-board rounded-2xl p-5 border-2 border-montano-light-blue/50 space-y-4">
+                        <h3 class="text-lg font-extrabold text-montano-blue flex items-center gap-2">
+                            <i class="fa-solid fa-drum text-montano-teal"></i> Dinámica "Los 3 Motores de la Orquesta" (4 minutos)
+                        </h3>
+                        <p class="text-slate-700 leading-relaxed text-base">
+                            Ya dominamos la <strong>Primera Frase</strong> (Clases 1-3) y la <strong>Segunda Frase</strong> (Clases 4-5). Hoy las uniremos tocando en <strong>forma de orquesta</strong> con tres equipos sonoros trabajando al mismo tiempo:
+                        </p>
+                        <div class="bg-white rounded-xl p-4 border border-slate-200 space-y-2">
+                            <p class="font-bold text-montano-teal">Juego corporal de calentamiento (Compás de Vals 3/4):</p>
+                            <ol class="list-decimal list-inside space-y-1.5 text-slate-700">
+                                <li><strong>Sección Ritmo (Bajos):</strong> Marca el tiempo 1 fuerte en las rodillas: <em>"¡BUM! - sh - sh"</em>.</li>
+                                <li><strong>Sección Armonía (Acordes):</strong> Responde en los tiempos 2 y 3 con palmas suaves: <em>"un - CHAS - CHAS"</em>.</li>
+                                <li><strong>Sección Melodía (Tiples):</strong> Canta la unión de la Primera y Segunda Frase encima del ritmo.</li>
+                            </ol>
+                        </div>
+
+                        <div class="flex flex-wrap items-center gap-3 pt-2">
+                            <button onclick="playMelodyDemo()" class="bg-montano-blue hover:bg-blue-700 text-white font-bold px-5 py-3 rounded-xl shadow-md flex items-center gap-2 transition transform active:scale-95 cursor-pointer">
+                                <i class="fa-solid fa-volume-high text-montano-yellow"></i> Escuchar Frase 1 + Frase 2 Unidas
+                            </button>
+                            <span id="demo-status" class="text-xs font-bold text-montano-teal"></span>
+                        </div>
+                    </div>
+
+                    <!-- Preguntas Exploratorias -->
+                    <div class="bg-gradient-to-br from-[#1269A8] to-[#54887D] text-white rounded-2xl p-5 shadow-md flex flex-col justify-between space-y-4">
+                        <div>
+                            <h3 class="text-lg font-extrabold text-montano-yellow flex items-center gap-2 mb-3">
+                                <i class="fa-solid fa-comments"></i> Preguntas de Ensayo Orquestal
+                            </h3>
+                            <ul class="space-y-3 text-sm sm:text-base">
+                                <li class="bg-white/10 p-3 rounded-xl border border-white/20">
+                                    <strong>1.</strong> ¿Qué pasaría en nuestra orquesta si la Armonía toca más fuerte que la Melodía?
+                                </li>
+                                <li class="bg-white/10 p-3 rounded-xl border border-white/20">
+                                    <strong>2.</strong> ¿En qué nota termina la Primera Frase y con qué nota empieza inmediatamente la Segunda Frase?
+                                </li>
+                                <li class="bg-white/10 p-3 rounded-xl border border-white/20">
+                                    <strong>3.</strong> ¿Por qué todos debemos mirar al Director(a) antes de empezar?
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="bg-montano-yellow text-slate-900 p-3 rounded-xl text-xs font-extrabold text-center">
+                            🏆 Meta de Clase 6: ¡Ensamblar Frase 1 + Frase 2 con Melodía, Armonía y Ritmo!
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================================================================= -->
+            <!-- PESTAÑA II: TRABAJO INDIVIDUAL (20 MINUTOS)                       -->
+            <!-- ================================================================= -->
+            <section id="tab2" class="tab-content hidden fade-in space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b-2 border-montano-board pb-4">
+                    <div>
+                        <span class="bg-montano-olive text-white text-xs font-extrabold px-3 py-1 rounded-full uppercase">Momento II • Preparación de Particella Individual</span>
+                        <h2 class="text-2xl sm:text-3xl font-extrabold text-montano-blue mt-2">
+                            Las 3 Partes de Nuestra Orquesta de Marimba 🎹
+                        </h2>
+                    </div>
+                    <div class="bg-montano-board px-4 py-2 rounded-2xl border border-montano-olive text-sm font-bold text-montano-teal">
+                        <i class="fa-solid fa-bullseye text-montano-blue mr-1"></i> Hábito: <em>Poner primero lo primero</em>
+                    </div>
+                </div>
+
+                <!-- Las 3 Partes Orquestales -->
+                <div class="bg-montano-board p-4 sm:p-5 rounded-2xl border-2 border-montano-light-blue/50">
+                    <h3 class="font-extrabold text-montano-blue text-lg mb-2">
+                        Guía de Estudio por Sección (10 min de práctica individual antes de ensamblar)
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-3">
+                        <div class="bg-white p-4 rounded-xl border-l-4 border-montano-blue shadow-sm">
+                            <span class="text-xs font-extrabold uppercase text-montano-blue">1. Sección Melodía (Tiples)</span>
+                            <p class="font-bold text-xs text-slate-500 mt-1">Frase 1:</p>
+                            <p class="font-mono font-extrabold text-xs text-slate-800">RE-MI-FA-SOL-LA-SI♭-LA-SOL-FA-MI-FA-SOL-LA</p>
+                            <p class="font-bold text-xs text-slate-500 mt-2">Frase 2:</p>
+                            <p class="font-mono font-extrabold text-xs text-slate-800">LA-LA-SOL-FA-MI-FA-SOL | SOL-SOL-FA-MI-RE-MI-FA | FA-MI-RE-DO#-RE-FA</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-xl border-l-4 border-montano-teal shadow-sm">
+                            <span class="text-xs font-extrabold uppercase text-montano-teal">2. Sección Armonía (Centro)</span>
+                            <p class="text-xs text-slate-700 mt-1">Acompaña en los tiempos <strong>2 y 3</strong> (<em>un - CHAS - CHAS</em>) alternando acordes suaves:</p>
+                            <p class="font-mono font-extrabold text-sm text-slate-800 mt-2">• Acorde FA: [FA + LA]</p>
+                            <p class="font-mono font-extrabold text-sm text-slate-800">• Acorde DO: [MI + SOL]</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-xl border-l-4 border-montano-olive shadow-sm">
+                            <span class="text-xs font-extrabold uppercase text-montano-olive">3. Sección Ritmo (Bajos / Percusión)</span>
+                            <p class="text-xs text-slate-700 mt-1">Marca el <strong>Tiempo 1</strong> (<em>¡BUM! - 2 - 3</em>) sosteniendo el pulso de vals sin acelerar:</p>
+                            <p class="font-mono font-extrabold text-sm text-slate-800 mt-2">• Bajo en FA (Frase 1 y cierre)</p>
+                            <p class="font-mono font-extrabold text-sm text-slate-800">• Bajo en DO (Descensos de Frase 2)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ejercicios Prácticos con Botones Desplegables de Autoevaluación -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <!-- Ejercicio 1 -->
+                    <div class="bg-white border-2 border-slate-200 rounded-2xl p-5 shadow-sm flex flex-col justify-between space-y-4">
+                        <div>
+                            <span class="inline-block bg-montano-blue text-white text-xs font-bold px-3 py-1 rounded-full mb-2">Ejercicio Individual 1</span>
+                            <h4 class="font-extrabold text-lg text-slate-800 mb-2">El Puente Entre la Frase 1 y la Frase 2</h4>
+                            <p class="text-slate-700 text-sm mb-3">
+                                La Primera Frase termina subiendo: <strong>FA - SOL - LA</strong>. Inmediatamente después arranca la Segunda Frase: <strong>LA - LA - SOL - FA...</strong> ¿Qué nota sirve de puente entre ambas frases?
+                            </p>
+                            <div class="bg-montano-board p-3 rounded-xl font-mono text-center text-sm sm:text-base font-extrabold text-montano-blue tracking-wide">
+                                ... FA - SOL - [ ___ ]  ||  [ ___ ] - LA - SOL - FA ...
+                            </div>
+                        </div>
+
+                        <div>
+                            <button onclick="toggleAccordion('sol-1', 'icon-sol-1')" class="w-full bg-montano-teal hover:bg-teal-700 text-white font-bold py-2.5 px-4 rounded-xl flex items-center justify-between transition cursor-pointer">
+                                <span><i class="fa-solid fa-eye mr-2"></i> Ver Respuesta y Baquetas</span>
+                                <i id="icon-sol-1" class="fa-solid fa-chevron-down transition-transform"></i>
+                            </button>
+                            <div id="sol-1" class="hidden mt-3 bg-emerald-50 border-2 border-montano-teal rounded-xl p-3 text-sm text-slate-800 fade-in">
+                                <p class="font-bold text-montano-teal mb-1">✅ ¡Es la nota LA (Tecla celeste / H)!</p>
+                                <p class="text-xs text-slate-700">Respira un tiempo al llegar al <strong>LA</strong> final de la Frase 1 y vuelve a golpear <strong>LA - LA</strong> para iniciar la Frase 2 sin perder el compás de 3 tiempos.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Ejercicio 2 -->
+                    <div class="bg-white border-2 border-slate-200 rounded-2xl p-5 shadow-sm flex flex-col justify-between space-y-4">
+                        <div>
+                            <span class="inline-block bg-montano-olive text-white text-xs font-bold px-3 py-1 rounded-full mb-2">Ejercicio Individual 2</span>
+                            <h4 class="font-extrabold text-lg text-slate-800 mb-2">Coordinación del Compás de Vals (1 - 2 - 3)</h4>
+                            <p class="text-slate-700 text-sm mb-3">
+                                En una orquesta de marimba, cada grupo toca en su turno dentro del compás de 3 tiempos. Completa quién toca en cada número:
+                            </p>
+                            <div class="bg-montano-board p-3 rounded-xl font-mono text-center text-sm sm:text-base font-extrabold text-montano-blue tracking-wide">
+                                Tiempo 1: [ ______ ]  |  Tiempos 2 y 3: [ ______ ]
+                            </div>
+                        </div>
+
+                        <div>
+                            <button onclick="toggleAccordion('sol-2', 'icon-sol-2')" class="w-full bg-montano-teal hover:bg-teal-700 text-white font-bold py-2.5 px-4 rounded-xl flex items-center justify-between transition cursor-pointer">
+                                <span><i class="fa-solid fa-eye mr-2"></i> Ver Respuesta Orquestal</span>
+                                <i id="icon-sol-2" class="fa-solid fa-chevron-down transition-transform"></i>
+                            </button>
+                            <div id="sol-2" class="hidden mt-3 bg-emerald-50 border-2 border-montano-teal rounded-xl p-3 text-sm text-slate-800 fade-in">
+                                <p class="font-bold text-montano-teal mb-1">✅ Tiempo 1: Ritmo (Bajo) | Tiempos 2 y 3: Armonía</p>
+                                <p class="text-xs text-slate-700">Mientras el Bajo marca el <strong>1</strong> y la Armonía responde <strong>2 - 3</strong>, la Melodía canta libremente las dos frases encima.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================================================================= -->
+            <!-- PESTAÑA III: TRABAJO COOPERATIVO / EN EQUIPO (30 MINUTOS)         -->
+            <!-- ================================================================= -->
+            <section id="tab3" class="tab-content hidden fade-in space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b-2 border-montano-board pb-4">
+                    <div>
+                        <span class="bg-montano-teal text-white text-xs font-extrabold px-3 py-1 rounded-full uppercase">Momento III • Ensayo Seccional y General</span>
+                        <h2 class="text-2xl sm:text-3xl font-extrabold text-montano-blue mt-2">
+                            ¡Ensayo en Forma de Orquesta! 🤝🎶
+                        </h2>
+                    </div>
+                    <div class="bg-montano-board px-4 py-2 rounded-2xl border border-montano-olive text-sm font-bold text-montano-teal">
+                        <i class="fa-solid fa-people-arrows text-montano-blue mr-1"></i> Hábito: <em>Sinergizar y Pensar ganar-ganar</em>
+                    </div>
+                </div>
+
+                <!-- Asignación de Roles del Equipo Orquestal -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="bg-montano-board rounded-2xl p-4 border-t-4 border-montano-blue shadow-sm">
+                        <div class="w-10 h-10 rounded-xl bg-montano-blue text-white flex items-center justify-center font-extrabold text-lg mb-2">1</div>
+                        <h3 class="font-extrabold text-montano-blue text-base">Director(a) de Orquesta</h3>
+                        <p class="text-xs sm:text-sm text-slate-700 mt-1">
+                            Marca el compás <strong>1 - 2 - 3</strong> con sus manos, da la entrada y señala el puente hacia la Segunda Frase.
+                        </p>
+                    </div>
+
+                    <div class="bg-montano-board rounded-2xl p-4 border-t-4 border-montano-yellow shadow-sm">
+                        <div class="w-10 h-10 rounded-xl bg-montano-yellow text-slate-900 flex items-center justify-center font-extrabold text-lg mb-2">2</div>
+                        <h3 class="font-extrabold text-slate-800 text-base">Sección Melodía</h3>
+                        <p class="text-xs sm:text-sm text-slate-700 mt-1">
+                            Interpreta con claridad y brillo la <strong>Primera y Segunda Frase</strong> completas en la parte aguda.
+                        </p>
+                    </div>
+
+                    <div class="bg-montano-board rounded-2xl p-4 border-t-4 border-montano-teal shadow-sm">
+                        <div class="w-10 h-10 rounded-xl bg-montano-teal text-white flex items-center justify-center font-extrabold text-lg mb-2">3</div>
+                        <h3 class="font-extrabold text-montano-teal text-base">Sección Armonía</h3>
+                        <p class="text-xs sm:text-sm text-slate-700 mt-1">
+                            Toca los acordes suaves (<strong>FA+LA</strong> y <strong>MI+SOL</strong>) en los tiempos 2 y 3 sin tapar la melodía.
+                        </p>
+                    </div>
+
+                    <div class="bg-montano-board rounded-2xl p-4 border-t-4 border-montano-olive shadow-sm">
+                        <div class="w-10 h-10 rounded-xl bg-montano-olive text-white flex items-center justify-center font-extrabold text-lg mb-2">4</div>
+                        <h3 class="font-extrabold text-montano-olive text-base">Sección Ritmo (Bajos)</h3>
+                        <p class="text-xs sm:text-sm text-slate-700 mt-1">
+                            Sostiene el pulso firme en el <strong>Tiempo 1</strong> (notas graves <strong>FA</strong> y <strong>DO</strong>) como el corazón de la orquesta.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Producto Concreto del Equipo -->
+                <div class="bg-white border-2 border-montano-blue/30 rounded-2xl p-5 space-y-4">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-2">
+                        <h3 class="text-lg font-extrabold text-montano-blue flex items-center gap-2">
+                            <i class="fa-solid fa-file-signature text-montano-olive"></i> Ruta del Ensayo Orquestal (30 minutos)
+                        </h3>
+                        <span class="text-xs font-bold bg-montano-yellow/40 text-slate-900 px-3 py-1 rounded-full">
+                            Ensamble por capas + Ensayo general
+                        </span>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-center">
+                        <div class="bg-montano-board p-3.5 rounded-xl border border-slate-200">
+                            <span class="block text-xs font-extrabold text-montano-olive uppercase mb-1">Paso 1 (10 min) • Base</span>
+                            <p class="font-bold text-sm text-slate-800">Ritmo + Armonía</p>
+                            <p class="text-xs text-slate-600 mt-1">Practican solos el vals <em>1 (Bajo) - 2 (Acorde) - 3 (Acorde)</em>.</p>
+                        </div>
+                        <div class="bg-montano-board p-3.5 rounded-xl border border-slate-200">
+                            <span class="block text-xs font-extrabold text-montano-blue uppercase mb-1">Paso 2 (10 min) • Unión</span>
+                            <p class="font-bold text-sm text-slate-800">Entra la Melodía</p>
+                            <p class="text-xs text-slate-600 mt-1">Se suma la Melodía tocando la <strong>Frase 1 + Frase 2</strong> unidas.</p>
+                        </div>
+                        <div class="bg-montano-board p-3.5 rounded-xl border border-slate-200">
+                            <span class="block text-xs font-extrabold text-montano-teal uppercase mb-1">Paso 3 (10 min) • Ensamble</span>
+                            <p class="font-bold text-sm text-slate-800">Cierre Orquestal</p>
+                            <p class="text-xs text-slate-600 mt-1">Todos terminan juntos en la nota <strong>FA</strong> mirando al Director(a).</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================================================================= -->
+            <!-- PESTAÑA IV: PLENARIA, SIMULADOR DE MARIMBA Y EVALUACIÓN (15 MIN)  -->
+            <!-- ================================================================= -->
+            <section id="tab4" class="tab-content hidden fade-in space-y-8">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b-2 border-montano-board pb-4">
+                    <div>
+                        <span class="bg-montano-blue text-white text-xs font-extrabold px-3 py-1 rounded-full uppercase">Momento IV • Muestra Orquestal en Aula</span>
+                        <h2 class="text-2xl sm:text-3xl font-extrabold text-montano-blue mt-2">
+                            Plenaria Orquestal • Frase 1 y Frase 2 Unidas 🇬🇹
+                        </h2>
+                    </div>
+                    <div class="bg-montano-board px-4 py-2 rounded-2xl border border-montano-olive text-sm font-bold text-montano-teal">
+                        <i class="fa-solid fa-ear-listen text-montano-blue mr-1"></i> Hábito: <em>Buscar primero entender, luego ser entendido</em>
+                    </div>
+                </div>
+
+                <!-- SIMULADOR INTERACTIVO DE MARIMBA DE HORMIGO -->
+                <div class="bg-gradient-to-b from-amber-50 to-orange-50 border-2 border-amber-300 rounded-3xl p-4 sm:p-6 shadow-md">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-4">
+                        <div>
+                            <h3 class="text-xl font-extrabold text-amber-950 flex items-center gap-2">
+                                <i class="fa-solid fa-music text-montano-blue"></i> Marimba Virtual Orquestal • Primera y Segunda Frase
+                            </h3>
+                            <p class="text-xs sm:text-sm text-amber-900">
+                                Toca melodía, acordes o bajos con mouse, tacto o teclado (<strong>W=DO#, S=RE, D=MI, F=FA, G=SOL, H=LA, U=SI♭</strong>).
+                            </p>
+                        </div>
+
+                        <div class="flex flex-wrap gap-2">
+                            <button onclick="playMelodyDemo()" class="bg-montano-blue hover:bg-blue-700 text-white font-bold text-xs sm:text-sm px-4 py-2.5 rounded-xl shadow flex items-center gap-2 transition cursor-pointer">
+                                <i class="fa-solid fa-play text-montano-yellow"></i> Escuchar Frases 1 + 2 con Armonía
+                            </button>
+                            <button onclick="stopMelodyDemo()" class="bg-slate-700 hover:bg-slate-800 text-white font-bold text-xs sm:text-sm px-3 py-2.5 rounded-xl shadow flex items-center gap-1 transition cursor-pointer">
+                                <i class="fa-solid fa-stop"></i> Detener
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Teclado de Marimba (Fila Superior Bemoles/Sostenidos y Fila Inferior Natural) -->
+                    <div class="bg-amber-950/10 p-3 sm:p-5 rounded-2xl border border-amber-900/20 overflow-x-auto">
+                        <div class="min-w-[540px] flex flex-col items-center gap-3">
+                            <!-- Fila Superior (Teclas alteradas: C#, Eb, F#, Ab, Bb) -->
+                            <div class="grid grid-cols-8 gap-2 sm:gap-3 w-full max-w-3xl px-6">
+                                <button data-note="C#4" onclick="playSingleNote('C#4')" class="marimba-key-sharp ring-4 ring-montano-yellow h-16 sm:h-20 text-montano-yellow font-extrabold text-xs sm:text-sm flex flex-col items-center justify-end pb-2">
+                                    <span>DO#</span>
+                                    <span class="text-[10px] opacity-80">[Tecla W]</span>
+                                </button>
+                                <button data-note="Eb4" onclick="playSingleNote('Eb4')" class="marimba-key-sharp h-16 sm:h-20 text-white font-bold text-xs flex flex-col items-center justify-end pb-2">
+                                    <span>MI♭</span>
+                                </button>
+                                <div></div>
+                                <button data-note="F#4" onclick="playSingleNote('F#4')" class="marimba-key-sharp h-16 sm:h-20 text-white font-bold text-xs flex flex-col items-center justify-end pb-2">
+                                    <span>FA#</span>
+                                </button>
+                                <button data-note="Ab4" onclick="playSingleNote('Ab4')" class="marimba-key-sharp h-16 sm:h-20 text-white font-bold text-xs flex flex-col items-center justify-end pb-2">
+                                    <span>SOL#</span>
+                                </button>
+                                <button data-note="Bb4" onclick="playSingleNote('Bb4')" class="marimba-key-sharp h-16 sm:h-20 text-white font-bold text-xs flex flex-col items-center justify-end pb-2">
+                                    <span>SI♭</span>
+                                </button>
+                                <div></div>
+                                <button data-note="F#4" onclick="playSingleNote('F#4')" class="marimba-key-sharp h-16 sm:h-20 text-white font-bold text-xs flex flex-col items-center justify-end pb-2">
+                                    <span>FA#</span>
+                                </button>
+                                <button data-note="Ab4" onclick="playSingleNote('Ab4')" class="marimba-key-sharp h-16 sm:h-20 text-white font-bold text-xs flex flex-col items-center justify-end pb-2">
+                                    <span>SOL#</span>
+                                </button>
+                                <button data-note="Bb4" onclick="playSingleNote('Bb4')" class="marimba-key-sharp ring-4 ring-montano-yellow h-16 sm:h-20 text-montano-yellow font-extrabold text-xs sm:text-sm flex flex-col items-center justify-end pb-2">
+                                    <span>SI♭</span>
+                                    <span class="text-[10px] opacity-80">[Tecla U]</span>
+                                </button>
+                                <div></div>
+                                <button data-note="C#5" onclick="playSingleNote('C#5')" class="marimba-key-sharp h-16 sm:h-20 text-white font-bold text-xs flex flex-col items-center justify-end pb-2">
+                                    <span>DO#5</span>
+                                </button>
+                            </div>
+
+                            <!-- Fila Inferior (Notas Naturales: DO4 a DO5) -->
+                            <div class="grid grid-cols-8 gap-2 sm:gap-3 w-full max-w-3xl">
+                                <button data-note="C4" onclick="playSingleNote('C4')" class="marimba-key h-28 sm:h-36 text-white font-extrabold flex flex-col items-center justify-end pb-3">
+                                    <span class="text-base sm:text-lg">DO</span>
+                                    <span class="text-[10px] text-amber-200">[A]</span>
+                                </button>
+                                <button data-note="D4" onclick="playSingleNote('D4')" class="marimba-key ring-2 ring-red-400 h-28 sm:h-36 text-white font-extrabold flex flex-col items-center justify-end pb-3">
+                                    <span class="w-3 h-3 rounded-full bg-red-500 mb-1"></span>
+                                    <span class="text-base sm:text-lg">RE</span>
+                                    <span class="text-[10px] text-amber-200">[S]</span>
+                                </button>
+                                <button data-note="E4" onclick="playSingleNote('E4')" class="marimba-key ring-2 ring-orange-400 h-28 sm:h-36 text-white font-extrabold flex flex-col items-center justify-end pb-3">
+                                    <span class="w-3 h-3 rounded-full bg-orange-500 mb-1"></span>
+                                    <span class="text-base sm:text-lg">MI</span>
+                                    <span class="text-[10px] text-amber-200">[D]</span>
+                                </button>
+                                <button data-note="F4" onclick="playSingleNote('F4')" class="marimba-key ring-2 ring-yellow-400 h-28 sm:h-36 text-white font-extrabold flex flex-col items-center justify-end pb-3">
+                                    <span class="w-3 h-3 rounded-full bg-yellow-400 mb-1"></span>
+                                    <span class="text-base sm:text-lg">FA</span>
+                                    <span class="text-[10px] text-amber-200">[F]</span>
+                                </button>
+                                <button data-note="G4" onclick="playSingleNote('G4')" class="marimba-key ring-2 ring-green-400 h-28 sm:h-36 text-white font-extrabold flex flex-col items-center justify-end pb-3">
+                                    <span class="w-3 h-3 rounded-full bg-green-500 mb-1"></span>
+                                    <span class="text-base sm:text-lg">SOL</span>
+                                    <span class="text-[10px] text-amber-200">[G]</span>
+                                </button>
+                                <button data-note="A4" onclick="playSingleNote('A4')" class="marimba-key ring-2 ring-sky-400 h-28 sm:h-36 text-white font-extrabold flex flex-col items-center justify-end pb-3">
+                                    <span class="w-3 h-3 rounded-full bg-sky-400 mb-1"></span>
+                                    <span class="text-base sm:text-lg">LA</span>
+                                    <span class="text-[10px] text-amber-200">[H]</span>
+                                </button>
+                                <button data-note="B4" onclick="playSingleNote('B4')" class="marimba-key h-28 sm:h-36 text-white font-extrabold flex flex-col items-center justify-end pb-3">
+                                    <span class="text-base sm:text-lg">SI</span>
+                                    <span class="text-[10px] text-amber-200">[J]</span>
+                                </button>
+                                <button data-note="C5" onclick="playSingleNote('C5')" class="marimba-key h-28 sm:h-36 text-white font-extrabold flex flex-col items-center justify-end pb-3">
+                                    <span class="text-base sm:text-lg">DO5</span>
+                                    <span class="text-[10px] text-amber-200">[K]</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Preguntas Dirigidas de Plenaria -->
+                <div class="bg-montano-board rounded-2xl p-5 border border-montano-teal/40">
+                    <h3 class="font-extrabold text-montano-blue text-lg mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-microphone-lines text-montano-teal"></i> Preguntas Dirigidas para Verificar el Aprendizaje en Plenaria
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
+                        <div class="bg-white p-3.5 rounded-xl border border-slate-200">
+                            <span class="font-extrabold text-montano-blue block mb-1">1. Sobre la Melodía:</span>
+                            ¿Qué estrategia usó su equipo para recordar cuándo subir a la tecla <strong>SI♭</strong>?
+                        </div>
+                        <div class="bg-white p-3.5 rounded-xl border border-slate-200">
+                            <span class="font-extrabold text-montano-teal block mb-1">2. Sobre el Trabajo en Equipo:</span>
+                            ¿Cómo lograron ponerse de acuerdo para empezar y terminar juntos sin adelantarse?
+                        </div>
+                        <div class="bg-white p-3.5 rounded-xl border border-slate-200">
+                            <span class="font-extrabold text-montano-olive block mb-1">3. Sobre Identidad Cultural:</span>
+                            ¿Por qué es importante que los niños de Guatemala aprendamos a tocar música de marimba?
+                        </div>
+                    </div>
+                </div>
+
+                <!-- INSTRUMENTO DE EVALUACIÓN INTERACTIVO PARA LA PLENARIA (LISTA DE COTEJO / RÚBRICA) -->
+                <div class="bg-white border-2 border-montano-blue rounded-2xl overflow-hidden shadow-md">
+                    <div class="bg-montano-blue text-white px-5 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                        <div>
+                            <h3 class="text-lg font-extrabold flex items-center gap-2">
+                                <i class="fa-solid fa-list-check text-montano-yellow"></i> Lista de Cotejo Interactiva de Evaluación (Plenaria)
+                            </h3>
+                            <p class="text-xs text-blue-100">Marca los criterios logrados por el equipo que expone y ejecuta en plenaria.</p>
+                        </div>
+                        <div class="bg-white text-montano-blue font-extrabold px-4 py-2 rounded-xl text-sm shadow">
+                            Punteo del Equipo: <span id="rubric-score" class="text-lg text-montano-teal">0</span> / 100 pts
+                        </div>
+                    </div>
+
+                    <div class="p-4 sm:p-5 space-y-3">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 bg-montano-board rounded-xl border border-slate-200">
+                            <div>
+                                <p class="font-extrabold text-slate-800 text-sm sm:text-base">1. Dominio del tema y claridad en la explicación</p>
+                                <p class="text-xs text-slate-600">El equipo nombra correctamente las notas de la frase musical de "Río Polochic" y presenta su mapa ilustrado.</p>
+                            </div>
+                            <select onchange="calculateRubric()" class="rubric-select bg-white border-2 border-montano-blue rounded-xl px-3 py-2 font-bold text-sm text-slate-800 cursor-pointer">
+                                <option value="0">Seleccionar nivel...</option>
+                                <option value="25">Logrado (25 pts)</option>
+                                <option value="18">En Proceso (18 pts)</option>
+                                <option value="10">Requiere Apoyo (10 pts)</option>
+                            </select>
+                        </div>
+
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 bg-montano-board rounded-xl border border-slate-200">
+                            <div>
+                                <p class="font-extrabold text-slate-800 text-sm sm:text-base">2. Lógica o procedimiento seguido por el equipo</p>
+                                <p class="text-xs text-slate-600">Ejecutan las frases en orden (RE-MI-FA-SOL y LA-SI♭-LA-SOL-FA-MI) manteniendo el pulso constante y buen agarre de baquetas.</p>
+                            </div>
+                            <select onchange="calculateRubric()" class="rubric-select bg-white border-2 border-montano-blue rounded-xl px-3 py-2 font-bold text-sm text-slate-800 cursor-pointer">
+                                <option value="0">Seleccionar nivel...</option>
+                                <option value="25">Logrado (25 pts)</option>
+                                <option value="18">En Proceso (18 pts)</option>
+                                <option value="10">Requiere Apoyo (10 pts)</option>
+                            </select>
+                        </div>
+
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 bg-montano-board rounded-xl border border-slate-200">
+                            <div>
+                                <p class="font-extrabold text-slate-800 text-sm sm:text-base">3. Trabajo colaborativo y equidad en la participación</p>
+                                <p class="text-xs text-slate-600">Todos los integrantes cumplen su rol (Director, Melodía A, Melodía B, Armonía) practicando la sinergia Montano.</p>
+                            </div>
+                            <select onchange="calculateRubric()" class="rubric-select bg-white border-2 border-montano-blue rounded-xl px-3 py-2 font-bold text-sm text-slate-800 cursor-pointer">
+                                <option value="0">Seleccionar nivel...</option>
+                                <option value="25">Logrado (25 pts)</option>
+                                <option value="18">En Proceso (18 pts)</option>
+                                <option value="10">Requiere Apoyo (10 pts)</option>
+                            </select>
+                        </div>
+
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 bg-montano-board rounded-xl border border-slate-200">
+                            <div>
+                                <p class="font-extrabold text-slate-800 text-sm sm:text-base">4. Capacidad de respuesta a preguntas de la plenaria</p>
+                                <p class="text-xs text-slate-600">Responden con respeto, seguridad y escucha activa a las preguntas del docente y compañeros.</p>
+                            </div>
+                            <select onchange="calculateRubric()" class="rubric-select bg-white border-2 border-montano-blue rounded-xl px-3 py-2 font-bold text-sm text-slate-800 cursor-pointer">
+                                <option value="0">Seleccionar nivel...</option>
+                                <option value="25">Logrado (25 pts)</option>
+                                <option value="18">En Proceso (18 pts)</option>
+                                <option value="10">Requiere Apoyo (10 pts)</option>
+                            </select>
+                        </div>
+
+                        <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
+                            <p id="rubric-feedback" class="text-sm font-bold text-montano-teal">
+                                Evalúa cada criterio para obtener la retroalimentación inmediata del equipo.
+                            </p>
+                            <button onclick="resetRubric()" class="bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold text-xs px-4 py-2 rounded-xl transition cursor-pointer">
+                                <i class="fa-solid fa-rotate-left mr-1"></i> Reiniciar para siguiente equipo
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- PIE DE PÁGINA INSTITUCIONAL -->
+        <footer class="text-center text-xs text-slate-500 py-2">
+            Colegio Montano • Modelo Formativo Institucional & CNB Guatemala • Formación Musical 2.º Primaria
+        </footer>
+    </div>
+
+    <!-- LÓGICA INTERACTIVA DE LA PIZARRA Y SINTETIZADOR DE MARIMBA -->
+    <script>
+        // ==========================================
+        // 1. NAVEGACIÓN ENTRE PESTAÑAS
+        // ==========================================
+        function switchTab(tabId) {
+            // Ocultar todos los contenidos de pestaña
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => content.classList.add('hidden'));
+
+            // Quitar estado activo a todos los botones
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            // Mostrar pestaña seleccionada y activar botón
+            document.getElementById(tabId).classList.remove('hidden');
+            document.getElementById('btn-' + tabId).classList.add('active');
+        }
+
+        // ==========================================
+        // 2. ACORDEONES DESPLEGABLES
+        // ==========================================
+        function toggleAccordion(panelId, iconId) {
+            const panel = document.getElementById(panelId);
+            const icon = document.getElementById(iconId);
+            panel.classList.toggle('hidden');
+            if (icon) {
+                icon.classList.toggle('rotate-180');
+            }
+        }
+
+        // ==========================================
+        // 3. PANTALLA COMPLETA (FULLSCREEN API)
+        // ==========================================
+        function toggleFullScreen() {
+            const elem = document.documentElement;
+            const btn = document.getElementById('fullscreen-btn');
+
+            if (!document.fullscreenElement) {
+                if (elem.requestFullscreen) {
+                    elem.requestFullscreen().catch(err => {
+                        console.warn("No se pudo activar pantalla completa:", err);
+                    });
+                }
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+
+        document.addEventListener('fullscreenchange', () => {
+            const btn = document.getElementById('fullscreen-btn');
+            if (document.fullscreenElement) {
+                btn.innerHTML = '<i class="fa-solid fa-compress text-lg"></i><span class="text-sm">Salir Pantalla Completa</span>';
+            } else {
+                btn.innerHTML = '<i class="fa-solid fa-expand text-lg"></i><span class="text-sm">Pantalla Completa</span>';
+            }
+        });
+
+        // ==========================================
+        // 4. TEMPORIZADOR DE CLASE (70 MINUTOS)
+        // ==========================================
+        let totalSeconds = 70 * 60;
+        let timerInterval = null;
+        let isRunning = false;
+
+        function updateTimerDisplay() {
+            const mins = Math.floor(totalSeconds / 60);
+            const secs = totalSeconds % 60;
+            document.getElementById('timer-display').textContent =
+                `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        }
+
+        function toggleTimer() {
+            const btn = document.getElementById('timer-btn');
+            if (isRunning) {
+                clearInterval(timerInterval);
+                isRunning = false;
+                btn.textContent = 'Reanudar';
+            } else {
+                isRunning = true;
+                btn.textContent = 'Pausar';
+                timerInterval = setInterval(() => {
+                    if (totalSeconds > 0) {
+                        totalSeconds--;
+                        updateTimerDisplay();
+                    } else {
+                        clearInterval(timerInterval);
+                        isRunning = false;
+                        btn.textContent = 'Finalizado';
+                    }
+                }, 1000);
+            }
+        }
+
+        // ==========================================
+        // 5. SINTETIZADOR DE MARIMBA CON TONE.JS
+        // ==========================================
+        let marimbaSynth = null;
+        let demoTimeouts = [];
+
+        async function initAudio() {
+            if (!marimbaSynth) {
+                await Tone.start();
+                // Configuración de sonido percusivo cálido de madera (hormigo)
+                marimbaSynth = new Tone.PolySynth(Tone.Synth, {
+                    oscillator: { type: "sine" },
+                    envelope: {
+                        attack: 0.005,
+                        decay: 0.35,
+                        sustain: 0.02,
+                        release: 0.6
+                    }
+                }).toDestination();
+            }
+        }
+        // Secuencia melódica y armónica: Primera y Segunda Frase Unidas de "Río Polochic"
+        async function playMelodyDemo() {
+            stopMelodyDemo();
+            await initAudio();
+
+            const statusEl = document.getElementById('demo-status');
+            if (statusEl) statusEl.textContent = "🎶 Sonando Orquesta: Primera y Segunda Frase de Río Polochic...";
+
+            const melody = [
+                // === PRIMERA FRASE (con base armónica en FA y DO) ===
+                { note: 'D4', time: 0 },
+                { note: 'E4', time: 240 },
+                { note: 'F4', time: 480, chord: ['C3', 'A3'] },
+                { note: 'G4', time: 720 },
+                { note: 'A4', time: 960 },
+                { note: 'Bb4', time: 1200, chord: ['C3', 'G3'] },
+                { note: 'A4', time: 1440 },
+                { note: 'G4', time: 1680 },
+                { note: 'F4', time: 1920, chord: ['F3', 'A3'] },
+                { note: 'E4', time: 2160 },
+                { note: 'F4', time: 2400 },
+                { note: 'G4', time: 2640 },
+                { note: 'A4', time: 2880, chord: ['F3', 'C4'] },
+
+                // === SEGUNDA FRASE ===
+                // Tramo 1: LA - LA - SOL - FA - MI - FA - SOL
+                { note: 'A4', time: 3450, chord: ['C3', 'G3'] },
+                { note: 'A4', time: 3690 },
+                { note: 'G4', time: 3930 },
+                { note: 'F4', time: 4170 },
+                { note: 'E4', time: 4410 },
+                { note: 'F4', time: 4650 },
+                { note: 'G4', time: 4890, chord: ['C3', 'E3'] },
+
+                // Tramo 2: SOL - SOL - FA - MI - RE - MI - FA
+                { note: 'G4', time: 5300, chord: ['F3', 'A3'] },
+                { note: 'G4', time: 5540 },
+                { note: 'F4', time: 5780 },
+                { note: 'E4', time: 6020 },
+                { note: 'D4', time: 6260 },
+                { note: 'E4', time: 6500 },
+                { note: 'F4', time: 6740, chord: ['F3', 'A3'] },
+
+                // Tramo 3 (Cierre): FA - MI - RE - DO# - RE - FA
+                { note: 'F4', time: 7150 },
+                { note: 'E4', time: 7390 },
+                { note: 'D4', time: 7630 },
+                { note: 'C#4', time: 7870 },
+                { note: 'D4', time: 8110 },
+                { note: 'F4', time: 8400, chord: ['F3', 'A3', 'C4'] }
+            ];
+
+            melody.forEach(item => {
+                const id = setTimeout(() => {
+                    marimbaSynth.triggerAttackRelease(item.note, "8n");
+                    if (item.chord) {
+                        marimbaSynth.triggerAttackRelease(item.chord, "4n", undefined, 0.35);
+                    }
+                    highlightKey(item.note);
+                }, item.time);
+                demoTimeouts.push(id);
+            });
+
+            const endId = setTimeout(() => {
+                if (statusEl) statusEl.textContent = "✅ ¡Ensamble completo! Ahora ensayemos con Melodía, Armonía y Ritmo.";
+            }, 9000);
+            demoTimeouts.push(endId);
+        }
+
+        function stopMelodyDemo() {
+            demoTimeouts.forEach(id => clearTimeout(id));
+            demoTimeouts = [];
+            const statusEl = document.getElementById('demo-status');
+            if (statusEl) statusEl.textContent = "";
+        }
+
+        // Soporte de teclado físico para tocar la marimba
+        const keyMap = {
+            'a': 'C4', 's': 'D4', 'd': 'E4', 'f': 'F4',
+            'g': 'G4', 'h': 'A4', 'j': 'B4', 'k': 'C5',
+            'w': 'C#4', 'e': 'Eb4', 't': 'F#4', 'y': 'Ab4', 'u': 'Bb4'
+        };
+
+        document.addEventListener('keydown', (e) => {
+            const note = keyMap[e.key.toLowerCase()];
+            if (note && !e.repeat) {
+                playSingleNote(note);
+            }
+        });
+
+        // ==========================================
+        // 6. RÚBRICA / LISTA DE COTEJO INTERACTIVA
+        // ==========================================
+        function calculateRubric() {
+            const selects = document.querySelectorAll('.rubric-select');
+            let total = 0;
+            selects.forEach(sel => {
+                total += parseInt(sel.value, 10) || 0;
+            });
+
+            document.getElementById('rubric-score').textContent = total;
+            const feedback = document.getElementById('rubric-feedback');
+
+            if (total === 0) {
+                feedback.textContent = "Evalúa cada criterio para obtener la retroalimentación inmediata del equipo.";
+            } else if (total >= 85) {
+                feedback.textContent = "🌟 ¡Excelente ensamble Montano! Dominio melódico, ritmo preciso y gran sinergia grupal.";
+            } else if (total >= 65) {
+                feedback.textContent = "👏 ¡Muy buen trabajo! Sigan practicando la transición hacia SI♭ para lograr mayor fluidez.";
+            } else {
+                feedback.textContent = "💪 ¡Buen esfuerzo! Practiquemos juntos más despacio siguiendo el pulso 1-2-3.";
+            }
+        }
+
+        function resetRubric() {
+            const selects = document.querySelectorAll('.rubric-select');
+            selects.forEach(sel => sel.value = "0");
+            calculateRubric();
+        }
+    </script>
+</body>
+</html>
